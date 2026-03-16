@@ -17,8 +17,8 @@ It reads the `CMap` resource section of a Visual Styles file and extracts all `D
 ---
 
 ## Screenshot
-
 > Tree view showing DarkMode base classes and their variants parsed from `aero.msstyles`.
+<img width="1916" height="1028" alt="Screenshot 2026-03-16 161452" src="https://github.com/user-attachments/assets/cb2f7e69-30eb-489d-ad37-78d60567a49f" />
 
 ---
 
