@@ -1,0 +1,56 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-msvc:
+    name: MSVC Build
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSVC
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build with MSVC (cl.exe)
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cl /W4 /EHsc /DUNICODE /D_UNICODE main.cpp /link Comctl32.lib Shlwapi.lib User32.lib Advapi32.lib Comdlg32.lib Gdi32.lib /SUBSYSTEM:WINDOWS /OUT:aero-darkmode-parser.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aero-darkmode-parser-msvc
+          path: aero-darkmode-parser.exe
+
+  build-mingw:
+    name: MinGW Build
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MinGW
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: mingw-w64-x86_64-gcc
+
+      - name: Build with MinGW
+        shell: msys2 {0}
+        run: |
+          g++ -municode -mwindows -DUNICODE -D_UNICODE main.cpp \
+              -o aero-darkmode-parser-mingw.exe \
+              -lcomctl32 -lshlwapi -luser32 -ladvapi32 -lcomdlg32 -lgdi32
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aero-darkmode-parser-mingw
+          path: aero-darkmode-parser-mingw.exe
